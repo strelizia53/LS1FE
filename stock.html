@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Management | Inventory System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .header {
+        background-color: white;
+        padding: 15px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-right: 15px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav a {
+        color: #2c3e50;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 5px 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      .btn-secondary {
+        background-color: #95a5a6;
+      }
+
+      .btn-secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      .btn-success {
+        background-color: #2ecc71;
+      }
+
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+
+      .btn-danger {
+        background-color: #e74c3c;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .btn-warning {
+        background-color: #f39c12;
+      }
+
+      .btn-warning:hover {
+        background-color: #d35400;
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .search-bar {
+        display: flex;
+        flex: 0.7;
+      }
+
+      .search-bar input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 14px;
+      }
+
+      .search-bar button {
+        padding: 10px 15px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .action-btns {
+        display: flex;
+        gap: 8px;
+      }
+
+      .action-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+
+      .stock-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-in-stock {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-low-stock {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-out-of-stock {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .category-tag {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: #e2e3e5;
+        color: #383d41;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 5px;
+      }
+
+      .pagination a,
+      .pagination span {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #3498db;
+        border-radius: 4px;
+      }
+
+      .pagination a:hover {
+        background-color: #f5f5f5;
+      }
+
+      .pagination .active {
+        background-color: #3498db;
+        color: white;
+        border-color: #3498db;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        width: 600px;
+        max-height: 90vh;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #7f8c8d;
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 15px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .tab-container {
+        margin-bottom: 20px;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+      }
+
+      .tab.active {
+        border-bottom: 2px solid #3498db;
+        color: #3498db;
+        font-weight: 500;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 15px 0;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .barcode-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .barcode-preview {
+        width: 150px;
+        height: 60px;
+        background-color: #f8f9fa;
+        border: 1px dashed #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #7f8c8d;
+        font-size: 12px;
+      }
+
+      .inventory-history {
+        margin-top: 30px;
+      }
+
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      .history-table th,
+      .history-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+      }
+
+      .history-table th {
+        background-color: #f8f9fa;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-container">
+        <img src="src/logo.png" alt="Company Logo" class="logo" />
+        <h2>Stock Management</h2>
+      </div>
+      <nav class="nav">
+        <a href="#">Dashboard</a>
+        <a href="#">Billing</a>
+        <a href="#" class="active">Inventory</a>
+        <a href="#">Customers</a>
+        <a href="#">Reports</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>Stock Management</h1>
+        <button id="addProductBtn" class="btn">+ Add New Product</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Search products by name, SKU, barcode..."
+          />
+          <button>Search</button>
+        </div>
+        <div class="filter-actions">
+          <select>
+            <option value="">All Categories</option>
+            <option value="electronics">Electronics</option>
+            <option value="office">Office Supplies</option>
+            <option value="furniture">Furniture</option>
+          </select>
+          <select>
+            <option value="">All Statuses</option>
+            <option value="in_stock">In Stock</option>
+            <option value="low_stock">Low Stock</option>
+            <option value="out_of_stock">Out of Stock</option>
+          </select>
+          <button class="btn-secondary">Export</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th width="5%">SKU</th>
+            <th width="20%">Product Name</th>
+            <th width="15%">Category</th>
+            <th width="10%">Price</th>
+            <th width="10%">In Stock</th>
+            <th width="10%">Status</th>
+            <th width="15%">Last Updated</th>
+            <th width="15%">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PRD-1001</td>
+            <td>Wireless Keyboard</td>
+            <td><span class="category-tag">Electronics</span></td>
+            <td>$29.99</td>
+            <td>45</td>
+            <td><span class="stock-status status-in-stock">In Stock</span></td>
+            <td>2023-05-15</td>
+            <td class="action-btns">
+              <button class="action-btn btn-secondary">View</button>
+              <button class="action-btn btn">Edit</button>
+              <button class="action-btn btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>PRD-1002</td>
+            <td>Ergonomic Mouse</td>
+            <td><span class="category-tag">Electronics</span></td>
+            <td>$39.99</td>
+            <td>12</td>
+            <td>
+              <span class="stock-status status-low-stock">Low Stock</span>
+            </td>
+            <td>2023-05-18</td>
+            <td class="action-btns">
+              <button class="action-btn btn-secondary">View</button>
+              <button class="action-btn btn">Edit</button>
+              <button class="action-btn btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>PRD-1003</td>
+            <td>Office Chair</td>
+            <td><span class="category-tag">Furniture</span></td>
+            <td>$199.99</td>
+            <td>5</td>
+            <td>
+              <span class="stock-status status-low-stock">Low Stock</span>
+            </td>
+            <td>2023-05-20</td>
+            <td class="action-btns">
+              <button class="action-btn btn-secondary">View</button>
+              <button class="action-btn btn">Edit</button>
+              <button class="action-btn btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>PRD-1004</td>
+            <td>Desk Lamp</td>
+            <td><span class="category-tag">Office</span></td>
+            <td>$24.99</td>
+            <td>0</td>
+            <td>
+              <span class="stock-status status-out-of-stock">Out of Stock</span>
+            </td>
+            <td>2023-05-22</td>
+            <td class="action-btns">
+              <button class="action-btn btn-secondary">View</button>
+              <button class="action-btn btn">Edit</button>
+              <button class="action-btn btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>PRD-1005</td>
+            <td>Notebook Set</td>
+            <td><span class="category-tag">Office</span></td>
+            <td>$12.99</td>
+            <td>78</td>
+            <td><span class="stock-status status-in-stock">In Stock</span></td>
+            <td>2023-05-25</td>
+            <td class="action-btns">
+              <button class="action-btn btn-secondary">View</button>
+              <button class="action-btn btn">Edit</button>
+              <button class="action-btn btn-danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <a href="#">&laquo;</a>
+        <a href="#">1</a>
+        <span class="active">2</span>
+        <a href="#">3</a>
+        <a href="#">&raquo;</a>
+      </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Add New Product</div>
+          <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="tab-container">
+            <div class="tabs">
+              <div class="tab active" data-tab="basic">Basic Info</div>
+              <div class="tab" data-tab="inventory">Inventory</div>
+              <div class="tab" data-tab="pricing">Pricing</div>
+            </div>
+
+            <form id="productForm">
+              <div class="tab-content active" id="basic-tab">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="productName">Product Name*</label>
+                    <input type="text" id="productName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="sku">SKU*</label>
+                    <input type="text" id="sku" required />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="category">Category*</label>
+                    <select id="category" required>
+                      <option value="">Select category</option>
+                      <option value="electronics">Electronics</option>
+                      <option value="office">Office Supplies</option>
+                      <option value="furniture">Furniture</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="subcategory">Subcategory</label>
+                    <select id="subcategory">
+                      <option value="">Select subcategory</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea id="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="barcode">Barcode</label>
+                    <div class="barcode-container">
+                      <input type="text" id="barcode" />
+                      <button type="button" class="btn-secondary">
+                        Generate
+                      </button>
+                    </div>
+                    <div class="barcode-preview">Barcode preview</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-content" id="inventory-tab">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="currentStock">Current Stock*</label>
+                    <input type="number" id="currentStock" min="0" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="reorderLevel">Reorder Level</label>
+                    <input type="number" id="reorderLevel" min="0" value="5" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="warehouse">Warehouse Location</label>
+                    <select id="warehouse">
+                      <option value="">Main Warehouse</option>
+                      <option value="west">West Warehouse</option>
+                      <option value="east">East Warehouse</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="supplier">Primary Supplier</label>
+                    <select id="supplier">
+                      <option value="">Select supplier</option>
+                      <option value="supplier1">Supplier A</option>
+                      <option value="supplier2">Supplier B</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="inventory-history">
+                  <h3>Inventory History</h3>
+                  <table class="history-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Reference</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>2023-05-10</td>
+                        <td>Purchase</td>
+                        <td>+50</td>
+                        <td>PO-10025</td>
+                      </tr>
+                      <tr>
+                        <td>2023-05-15</td>
+                        <td>Sale</td>
+                        <td>-5</td>
+                        <td>INV-10045</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="tab-content" id="pricing-tab">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="costPrice">Cost Price*</label>
+                    <input
+                      type="number"
+                      id="costPrice"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="sellingPrice">Selling Price*</label>
+                    <input
+                      type="number"
+                      id="sellingPrice"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="taxRate">Tax Rate (%)</label>
+                    <input
+                      type="number"
+                      id="taxRate"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      value="10"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="discount">Discount (%)</label>
+                    <input
+                      type="number"
+                      id="discount"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary">Cancel</button>
+          <button class="btn">Save Product</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Modal handling
+      const modal = document.getElementById("productModal");
+      const addBtn = document.getElementById("addProductBtn");
+      const closeBtn = document.querySelector(".close-btn");
+
+      addBtn.onclick = function () {
+        modal.style.display = "flex";
+      };
+
+      closeBtn.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      // Tab handling
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          // Remove active class from all tabs and contents
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.remove("active"));
+
+          // Add active class to clicked tab and corresponding content
+          tab.classList.add("active");
+          const tabId = tab.getAttribute("data-tab");
+          document.getElementById(`${tabId}-tab`).classList.add("active");
+        });
+      });
+
+      // In a real implementation, you would add:
+      // - Form validation
+      // - Edit functionality (pre-filling the form)
+      // - Delete confirmation
+      // - API calls to save data
+      // - Dynamic category/subcategory loading
+    </script>
+  </body>
+</html>

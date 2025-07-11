@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Notes | Stock System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .header {
+        background-color: white;
+        padding: 15px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-right: 15px;
+      }
+
+      .driver-info {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .driver-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #3498db;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      .btn-secondary {
+        background-color: #95a5a6;
+      }
+
+      .btn-secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      .btn-success {
+        background-color: #2ecc71;
+      }
+
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+
+      .btn-danger {
+        background-color: #e74c3c;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .delivery-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+      }
+
+      .delivery-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .delivery-meta {
+        display: flex;
+        gap: 30px;
+      }
+
+      .meta-item {
+        margin-bottom: 10px;
+      }
+
+      .meta-label {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin-bottom: 3px;
+      }
+
+      .meta-value {
+        font-weight: 500;
+      }
+
+      .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-out-for-delivery {
+        background-color: #cce5ff;
+        color: #004085;
+      }
+
+      .status-delivered {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .customer-section {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .customer-address {
+        flex: 1;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+
+      .customer-contact {
+        width: 300px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .delivery-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+
+      .signature-pad {
+        margin-top: 20px;
+        border: 1px dashed #ddd;
+        height: 100px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f8c8d;
+        cursor: pointer;
+      }
+
+      .notes-section {
+        margin-top: 20px;
+      }
+
+      .notes-section textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        min-height: 80px;
+      }
+
+      .delivery-map {
+        height: 200px;
+        background-color: #eee;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f8c8d;
+        border-radius: 4px;
+      }
+
+      .filter-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .filter-bar select {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-container">
+        <img src="src/logo.png" alt="Company Logo" class="logo" />
+        <h2>Delivery Portal</h2>
+      </div>
+      <div class="driver-info">
+        <div>
+          <div class="meta-label">Driver</div>
+          <div class="meta-value">John Smith</div>
+        </div>
+        <div class="driver-avatar">JS</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>Today's Deliveries</h1>
+        <div class="filter-bar">
+          <select>
+            <option>All Deliveries</option>
+            <option>Pending</option>
+            <option>Out for Delivery</option>
+            <option>Completed</option>
+          </select>
+          <button class="btn-secondary">Refresh</button>
+        </div>
+      </div>
+
+      <!-- Delivery Note 1 -->
+      <div class="delivery-card">
+        <div class="delivery-header">
+          <div class="delivery-meta">
+            <div>
+              <div class="meta-label">Delivery #</div>
+              <div class="meta-value">DL-2023-10025</div>
+            </div>
+            <div>
+              <div class="meta-label">Order #</div>
+              <div class="meta-value">ORD-2023-1045</div>
+            </div>
+            <div>
+              <div class="meta-label">Date</div>
+              <div class="meta-value">2023-05-28</div>
+            </div>
+            <div>
+              <div class="meta-label">Priority</div>
+              <div class="meta-value">Standard</div>
+            </div>
+          </div>
+          <div class="status-badge status-out-for-delivery">
+            Out for Delivery
+          </div>
+        </div>
+
+        <div class="customer-section">
+          <div class="customer-address">
+            <div class="section-title">Delivery Address</div>
+            <p><strong>ABC Corporation</strong></p>
+            <p>123 Business Park Ave</p>
+            <p>Suite 400</p>
+            <p>New York, NY 10001</p>
+            <p>United States</p>
+          </div>
+          <div class="customer-contact">
+            <div class="section-title">Contact Information</div>
+            <p><strong>Sarah Johnson</strong> (Receiver)</p>
+            <p>Phone: (212) 555-1234</p>
+            <p>Email: sarah.j@abccorp.com</p>
+            <p>Delivery Instructions: Front desk reception, ask for Sarah</p>
+          </div>
+        </div>
+
+        <div class="delivery-map">
+          [Map would display here with route directions]
+        </div>
+
+        <div class="section-title">Items to Deliver</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Qty</th>
+              <th>Condition</th>
+              <th>Check</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ergonomic Office Chair</td>
+              <td>PRD-1003</td>
+              <td>2</td>
+              <td>
+                <select>
+                  <option>Good</option>
+                  <option>Damaged</option>
+                  <option>Missing</option>
+                </select>
+              </td>
+              <td><input type="checkbox" /></td>
+            </tr>
+            <tr>
+              <td>Wireless Keyboard</td>
+              <td>PRD-1001</td>
+              <td>5</td>
+              <td>
+                <select>
+                  <option>Good</option>
+                  <option>Damaged</option>
+                  <option>Missing</option>
+                </select>
+              </td>
+              <td><input type="checkbox" /></td>
+            </tr>
+            <tr>
+              <td>Desk Lamp</td>
+              <td>PRD-1004</td>
+              <td>3</td>
+              <td>
+                <select>
+                  <option>Good</option>
+                  <option>Damaged</option>
+                  <option>Missing</option>
+                </select>
+              </td>
+              <td><input type="checkbox" /></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="notes-section">
+          <div class="section-title">Delivery Notes</div>
+          <textarea
+            placeholder="Enter any notes about the delivery..."
+          ></textarea>
+        </div>
+
+        <div class="section-title">Customer Signature</div>
+        <div class="signature-pad">Click to capture signature</div>
+
+        <div class="delivery-actions">
+          <button class="btn-danger">Report Issue</button>
+          <div>
+            <button class="btn-secondary">Save as Draft</button>
+            <button class="btn-success">Complete Delivery</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Note 2 -->
+      <div class="delivery-card">
+        <div class="delivery-header">
+          <div class="delivery-meta">
+            <div>
+              <div class="meta-label">Delivery #</div>
+              <div class="meta-value">DL-2023-10026</div>
+            </div>
+            <div>
+              <div class="meta-label">Order #</div>
+              <div class="meta-value">ORD-2023-1046</div>
+            </div>
+            <div>
+              <div class="meta-label">Date</div>
+              <div class="meta-value">2023-05-28</div>
+            </div>
+            <div>
+              <div class="meta-label">Priority</div>
+              <div class="meta-value">Express</div>
+            </div>
+          </div>
+          <div class="status-badge status-pending">Pending</div>
+        </div>
+
+        <div class="customer-section">
+          <div class="customer-address">
+            <div class="section-title">Delivery Address</div>
+            <p><strong>XYZ Enterprises</strong></p>
+            <p>456 Commerce Street</p>
+            <p>Floor 12</p>
+            <p>New York, NY 10005</p>
+            <p>United States</p>
+          </div>
+          <div class="customer-contact">
+            <div class="section-title">Contact Information</div>
+            <p><strong>Michael Brown</strong> (Receiver)</p>
+            <p>Phone: (212) 555-5678</p>
+            <p>Email: michael.b@xyz.com</p>
+            <p>
+              Delivery Instructions: Call upon arrival, security clearance
+              required
+            </p>
+          </div>
+        </div>
+
+        <div class="delivery-map">
+          [Map would display here with route directions]
+        </div>
+
+        <div class="delivery-actions">
+          <button class="btn-secondary">Start Delivery</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // In a real implementation, you would add:
+      // - Signature capture functionality
+      // - Delivery status updates
+      // - GPS location tracking
+      // - Photo capture for proof of delivery
+      // - Offline capability for when drivers have no internet
+    </script>
+  </body>
+</html>

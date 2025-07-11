@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Scheduling Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .header {
+        background-color: white;
+        padding: 15px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-right: 15px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav a {
+        color: #2c3e50;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 5px 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+      }
+
+      .container {
+        display: flex;
+        max-width: 1400px;
+        margin: 30px auto;
+        padding: 0 20px;
+        gap: 30px;
+      }
+
+      .calendar-container {
+        flex: 1;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        height: calc(100vh - 150px);
+      }
+
+      .orders-sidebar {
+        width: 400px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        height: calc(100vh - 150px);
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .sidebar-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .selected-date {
+        font-size: 15px;
+        color: #7f8c8d;
+      }
+
+      .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .order-card {
+        border: 1px solid #eee;
+        border-radius: 6px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .order-card:hover {
+        border-color: #3498db;
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+      }
+
+      .order-card-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .order-number {
+        font-weight: 500;
+        color: #3498db;
+      }
+
+      .order-time {
+        font-size: 13px;
+        color: #7f8c8d;
+      }
+
+      .order-customer {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .order-items {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin-bottom: 10px;
+      }
+
+      .order-status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-scheduled {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-urgent {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .fc .fc-toolbar-title {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .fc .fc-button {
+        background-color: #3498db;
+        border: none;
+        padding: 6px 12px;
+      }
+
+      .fc .fc-button-primary:not(:disabled).fc-button-active {
+        background-color: #2980b9;
+      }
+
+      .fc .fc-button-primary:not(:disabled):hover {
+        background-color: #2980b9;
+      }
+
+      .fc-event {
+        cursor: pointer;
+        font-size: 12px;
+        padding: 2px 5px;
+        border: none;
+      }
+
+      .fc-daygrid-event-dot {
+        display: none;
+      }
+
+      .no-orders {
+        text-align: center;
+        padding: 30px;
+        color: #7f8c8d;
+      }
+
+      .view-options {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .view-option {
+        padding: 8px 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .view-option.active {
+        background-color: #3498db;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-container">
+        <img src="src/logo.png" alt="Company Logo" class="logo" />
+        <h2>Order Scheduling Dashboard</h2>
+      </div>
+      <nav class="nav">
+        <a href="#">Dashboard</a>
+        <a href="#" class="active">Calendar</a>
+        <a href="#">Orders</a>
+        <a href="#">Customers</a>
+        <a href="#">Reports</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="calendar-container" id="calendar"></div>
+
+      <div class="orders-sidebar">
+        <div class="sidebar-header">
+          <div>
+            <div class="sidebar-title">Scheduled Orders</div>
+            <div class="selected-date" id="selectedDate">May 30, 2023</div>
+          </div>
+          <div class="view-options">
+            <div class="view-option active">Day</div>
+            <div class="view-option">Week</div>
+            <div class="view-option">Month</div>
+          </div>
+        </div>
+
+        <div class="order-list" id="orderList">
+          <!-- Orders will be populated here by JavaScript -->
+          <div class="order-card">
+            <div class="order-card-header">
+              <div class="order-number">ORD-2023-1045</div>
+              <div class="order-time">10:00 AM - 12:00 PM</div>
+            </div>
+            <div class="order-customer">ABC Corporation (Sarah Johnson)</div>
+            <div class="order-items">3 items • $1,245.75</div>
+            <div>
+              <span class="order-status status-scheduled">Scheduled</span>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-card-header">
+              <div class="order-number">ORD-2023-1046</div>
+              <div class="order-time">2:00 PM - 3:00 PM</div>
+            </div>
+            <div class="order-customer">XYZ Enterprises (Michael Brown)</div>
+            <div class="order-items">5 items • $890.50</div>
+            <div>
+              <span class="order-status status-urgent">Urgent</span>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-card-header">
+              <div class="order-number">ORD-2023-1047</div>
+              <div class="order-time">4:30 PM - 5:30 PM</div>
+            </div>
+            <div class="order-customer">Global Solutions (David Wilson)</div>
+            <div class="order-items">2 items • $1,750.00</div>
+            <div>
+              <span class="order-status status-pending"
+                >Pending Confirmation</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize calendar
+        const calendarEl = document.getElementById("calendar");
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          },
+          events: [
+            {
+              title: "ABC Corporation",
+              start: "2023-05-30T10:00:00",
+              end: "2023-05-30T12:00:00",
+              extendedProps: {
+                orderId: "ORD-2023-1045",
+                customer: "Sarah Johnson",
+                items: 3,
+                amount: 1245.75,
+                status: "scheduled",
+              },
+              color: "#28a745",
+            },
+            {
+              title: "XYZ Enterprises",
+              start: "2023-05-30T14:00:00",
+              end: "2023-05-30T15:00:00",
+              extendedProps: {
+                orderId: "ORD-2023-1046",
+                customer: "Michael Brown",
+                items: 5,
+                amount: 890.5,
+                status: "urgent",
+              },
+              color: "#dc3545",
+            },
+            {
+              title: "Global Solutions",
+              start: "2023-05-30T16:30:00",
+              end: "2023-05-30T17:30:00",
+              extendedProps: {
+                orderId: "ORD-2023-1047",
+                customer: "David Wilson",
+                items: 2,
+                amount: 1750.0,
+                status: "pending",
+              },
+              color: "#ffc107",
+            },
+            {
+              title: "Tech Innovators",
+              start: "2023-05-31T09:00:00",
+              end: "2023-05-31T10:30:00",
+              extendedProps: {
+                orderId: "ORD-2023-1048",
+                customer: "Lisa Thompson",
+                items: 4,
+                amount: 3200.0,
+                status: "scheduled",
+              },
+              color: "#28a745",
+            },
+          ],
+          eventClick: function (info) {
+            // When an event is clicked, you could show more details
+            alert(
+              "Order: " +
+                info.event.extendedProps.orderId +
+                "\n" +
+                "Customer: " +
+                info.event.extendedProps.customer +
+                "\n" +
+                "Amount: $" +
+                info.event.extendedProps.amount
+            );
+          },
+          dateClick: function (info) {
+            // Update the selected date in the sidebar
+            document.getElementById("selectedDate").textContent = info.dateStr;
+            // In a real app, you would filter orders for this date
+          },
+        });
+        calendar.render();
+
+        // Set today's date as selected
+        const today = new Date();
+        document.getElementById("selectedDate").textContent =
+          today.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        // View option click handlers
+        const viewOptions = document.querySelectorAll(".view-option");
+        viewOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            viewOptions.forEach((opt) => opt.classList.remove("active"));
+            this.classList.add("active");
+
+            // Change calendar view based on selection
+            if (this.textContent === "Day") {
+              calendar.changeView("timeGridDay");
+            } else if (this.textContent === "Week") {
+              calendar.changeView("timeGridWeek");
+            } else {
+              calendar.changeView("dayGridMonth");
+            }
+          });
+        });
+
+        // Order card click handler (example)
+        const orderCards = document.querySelectorAll(".order-card");
+        orderCards.forEach((card) => {
+          card.addEventListener("click", function () {
+            // In a real app, this would open order details
+            const orderNumber = this.querySelector(".order-number").textContent;
+            alert("Showing details for order: " + orderNumber);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Approval | Admin Panel</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .approval-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background-color: #2c3e50;
+        padding: 20px 30px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-right: 15px;
+      }
+
+      .header-title {
+        font-size: 20px;
+        font-weight: 500;
+      }
+
+      .approval-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .order-content {
+        padding: 30px;
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .order-meta {
+        display: flex;
+        gap: 40px;
+      }
+
+      .meta-group {
+        margin-bottom: 15px;
+      }
+
+      .meta-label {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin-bottom: 5px;
+      }
+
+      .meta-value {
+        font-weight: 500;
+        font-size: 15px;
+      }
+
+      .customer-section {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .customer-card {
+        flex: 1;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        color: #2c3e50;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .summary-card {
+        width: 300px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        padding: 20px;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .summary-total {
+        font-weight: 600;
+        font-size: 16px;
+        border-top: 1px solid #ddd;
+        padding-top: 12px;
+        margin-top: 12px;
+      }
+
+      .approval-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 40px;
+        padding-top: 25px;
+        border-top: 1px solid #eee;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-approve {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .btn-approve:hover {
+        background-color: #218838;
+      }
+
+      .btn-reject {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      .btn-reject:hover {
+        background-color: #c82333;
+      }
+
+      .btn-request-changes {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      .btn-request-changes:hover {
+        background-color: #e0a800;
+      }
+
+      .notes-section {
+        margin-top: 30px;
+      }
+
+      .notes-section label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+
+      .notes-section textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        min-height: 100px;
+        font-size: 14px;
+      }
+
+      .priority-high {
+        color: #dc3545;
+        font-weight: 600;
+      }
+
+      .priority-normal {
+        color: #28a745;
+      }
+
+      .payment-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .payment-paid {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .payment-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="approval-container">
+      <div class="header">
+        <div class="logo-container">
+          <img src="src/logo.png" alt="Company Logo" class="logo" />
+          <div class="header-title">Order Approval Request</div>
+        </div>
+        <div class="approval-status">Pending Approval</div>
+      </div>
+
+      <div class="order-content">
+        <div class="order-header">
+          <div class="order-meta">
+            <div class="meta-group">
+              <div class="meta-label">Order Number</div>
+              <div class="meta-value">ORD-2023-1045</div>
+            </div>
+            <div class="meta-group">
+              <div class="meta-label">Order Date</div>
+              <div class="meta-value">May 28, 2023 at 10:45 AM</div>
+            </div>
+            <div class="meta-group">
+              <div class="meta-label">Priority</div>
+              <div class="meta-value priority-high">High</div>
+            </div>
+            <div class="meta-group">
+              <div class="meta-label">Payment Status</div>
+              <div class="meta-value">
+                <span class="payment-status payment-paid">Paid</span>
+              </div>
+            </div>
+          </div>
+          <div class="meta-group">
+            <div class="meta-label">Total Amount</div>
+            <div class="meta-value" style="font-size: 18px; font-weight: 600">
+              $1,245.75
+            </div>
+          </div>
+        </div>
+
+        <div class="customer-section">
+          <div class="customer-card">
+            <div class="section-title">Customer Information</div>
+            <p><strong>ABC Corporation</strong></p>
+            <p>Tax ID: 123-456-789</p>
+            <p>Customer Since: Jan 2021</p>
+            <p>Total Orders: 24</p>
+          </div>
+          <div class="customer-card">
+            <div class="section-title">Billing & Shipping</div>
+            <p><strong>Sarah Johnson</strong></p>
+            <p>123 Business Park Ave, Suite 400</p>
+            <p>New York, NY 10001</p>
+            <p>Phone: (212) 555-1234</p>
+            <p>Email: sarah.j@abccorp.com</p>
+          </div>
+        </div>
+
+        <div class="section-title">Order Items</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th>Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ergonomic Office Chair</td>
+              <td>PRD-1003</td>
+              <td>$199.99</td>
+              <td>2</td>
+              <td>$399.98</td>
+              <td>In Stock (5)</td>
+            </tr>
+            <tr>
+              <td>Wireless Keyboard</td>
+              <td>PRD-1001</td>
+              <td>$29.99</td>
+              <td>5</td>
+              <td>$149.95</td>
+              <td>In Stock (45)</td>
+            </tr>
+            <tr>
+              <td>Desk Lamp</td>
+              <td>PRD-1004</td>
+              <td>$24.99</td>
+              <td>3</td>
+              <td>$74.97</td>
+              <td>In Stock (12)</td>
+            </tr>
+            <tr>
+              <td>Notebook Set</td>
+              <td>PRD-1005</td>
+              <td>$12.99</td>
+              <td>10</td>
+              <td>$129.90</td>
+              <td>In Stock (78)</td>
+            </tr>
+            <tr>
+              <td>Monitor Stand</td>
+              <td>PRD-1006</td>
+              <td>$49.99</td>
+              <td>4</td>
+              <td>$199.96</td>
+              <td>Low Stock (3)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-item">
+              <span>Subtotal:</span>
+              <span>$954.76</span>
+            </div>
+            <div class="summary-item">
+              <span>Shipping:</span>
+              <span>$50.00</span>
+            </div>
+            <div class="summary-item">
+              <span>Tax (10%):</span>
+              <span>$95.48</span>
+            </div>
+            <div class="summary-item">
+              <span>Discount:</span>
+              <span>-$50.00</span>
+            </div>
+            <div class="summary-item summary-total">
+              <span>Total:</span>
+              <span>$1,050.24</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="notes-section">
+          <div class="section-title">Customer Notes</div>
+          <p>
+            "Please deliver before 3 PM if possible. Call Sarah at extension 405
+            when you arrive."
+          </p>
+        </div>
+
+        <div class="notes-section">
+          <label for="approval-notes">Your Notes (Optional)</label>
+          <textarea
+            id="approval-notes"
+            placeholder="Add any internal notes about this approval..."
+          ></textarea>
+        </div>
+
+        <div class="approval-actions">
+          <button class="btn btn-request-changes">Request Changes</button>
+          <button class="btn btn-reject">Reject Order</button>
+          <button class="btn btn-approve">Approve Order</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // In a real implementation, you would add:
+      // - Form submission to backend
+      // - Confirmation dialogs for actions
+      // - Status update notifications
+      // - Integration with order management system
+
+      document
+        .querySelector(".btn-approve")
+        .addEventListener("click", function () {
+          if (confirm("Are you sure you want to approve this order?")) {
+            // Submit approval to server
+            alert("Order approved successfully!");
+            // Redirect or update UI
+          }
+        });
+
+      document
+        .querySelector(".btn-reject")
+        .addEventListener("click", function () {
+          const notes = document.getElementById("approval-notes").value;
+          if (confirm("Are you sure you want to reject this order?")) {
+            // Submit rejection to server with notes
+            alert("Order rejected successfully!");
+            // Redirect or update UI
+          }
+        });
+
+      document
+        .querySelector(".btn-request-changes")
+        .addEventListener("click", function () {
+          const notes = document.getElementById("approval-notes").value;
+          if (!notes) {
+            alert("Please provide notes about what changes are needed.");
+            return;
+          }
+          if (confirm("Request changes for this order?")) {
+            // Submit change request to server
+            alert("Change request submitted!");
+            // Redirect or update UI
+          }
+        });
+    </script>
+  </body>
+</html>
