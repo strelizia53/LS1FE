@@ -130,5 +130,19 @@
         <button type="submit">Sign In</button>
       </form>
     </div>
+    <script>
+      document.querySelector("form").addEventListener("submit", function (event) {
+        //redirect to the dashboard page
+        event.preventDefault(); // Prevent the default form submission
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        if (username === "admin" && password === "admin") {
+          // Redirect to the dashboard page
+          window.location.href = "dashboard.html";
+        } else {
+          alert("Invalid username or password");
+        }
+      });
+    </script>
   </body>
 </html>

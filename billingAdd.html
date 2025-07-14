@@ -259,11 +259,11 @@
         <h2>Stock Management</h2>
       </div>
       <nav class="nav">
-        <a href="#">Dashboard</a>
-        <a href="#" class="active">Billing</a>
-        <a href="#">Inventory</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="billing.html">Billing</a>
+        <a href="stock.html">Inventory</a>
+        <a href="customer.html" class="active">Customers</a>
         <a href="#">Reports</a>
-        <a href="#">Settings</a>
       </nav>
     </header>
 
@@ -332,8 +332,12 @@
             </div>
             <div class="form-col">
               <div class="form-group">
-                <label for="due-date">Due Date</label>
-                <input type="date" id="due-date" required />
+                <label for="delivery-Method">Delivery</label>
+                <select id="delivery-method" required>
+                  <option value="">Select delivery method</option>
+                  <option value="pickup">Own Transport</option>
+                  <option value="delivery">Delivery</option>
+                </select>
               </div>
             </div>
           </div>
@@ -400,6 +404,7 @@
 
           <div class="summary-row">
             <div class="summary-card">
+
               <div class="summary-item">
                 <span>Subtotal:</span>
                 <span>$0.00</span>
@@ -410,6 +415,10 @@
               </div>
               <div class="summary-item">
                 <span>Discount:</span>
+                <span>$0.00</span>
+              </div>
+              <div class="summary-item">
+                <span>Delivery:</span>
                 <span>$0.00</span>
               </div>
               <div class="summary-item summary-total">
@@ -424,6 +433,31 @@
           <div class="card-header">
             <div class="card-title">Additional Information</div>
           </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="date-of-issue">Date of Issue</label>
+                <input type="date" id="date-of-issue" required />
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="date-of-use">Date of Use</label>
+                <input type="date" id="date-of-use" required />
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="date-of-return">
+                Date of Return
+                </label>
+                <input type="date" id="date-of-return" required />
+              </div>
+            </div>
+
+          </div>
+
 
           <div class="form-group">
             <label for="notes">Notes</label>
