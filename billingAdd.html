@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create New Bill | Stock System</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+
     <style>
       * {
         margin: 0;
@@ -250,10 +252,76 @@
         gap: 15px;
         margin-top: 30px;
       }
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 250px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: left 0.3s ease;
+        z-index: 1000;
+        padding: 20px;
+      }
+
+      .mobile-nav.active {
+        left: 0;
+      }
+
+      .close-btn {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+        cursor: pointer;
+      }
+
+      .close-btn i {
+        font-size: 24px;
+        color: #333;
+      }
+
+      .mobile-nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .mobile-nav-links a {
+        color: #2c3e50;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        transition: all 0.2s;
+      }
+
+      .mobile-nav-links a:hover {
+        color: #3498db;
+      }
+
+      
     </style>
+    <link rel="stylesheet" href="mob.css" />
   </head>
   <body>
     <header class="header">
+      <div class="mobile-nav" id="mobileNav">
+        <div class="close-btn" id="closeNav">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <nav class="mobile-nav-links">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="billing.html">Billing</a>
+          <a href="stock.html">Inventory</a>
+          <a href="customer.html" class="active">Customers</a>
+          <a href="#">Reports</a>
+        </nav>
+
+        <div class="menu-icon">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      </div>
       <div class="logo-container">
         <img src="src/logo.png" alt="Company Logo" class="logo" />
         <h2>Stock Management</h2>
@@ -265,6 +333,9 @@
         <a href="customer.html" class="active">Customers</a>
         <a href="#">Reports</a>
       </nav>
+      <div class="menu-icon">
+        <i class="fa-solid fa-bars"></i>
+      </div>
     </header>
 
     <div class="container">
@@ -485,5 +556,19 @@
         </div>
       </form>
     </div>
+    <script>
+      const menuIcon = document.querySelector(".menu-icon");
+        const mobileNav = document.getElementById("mobileNav");
+        const closeNav = document.getElementById("closeNav");
+
+        menuIcon.addEventListener("click", function () {
+          mobileNav.classList.add("active");
+        });
+
+        closeNav.addEventListener("click", function () {
+          mobileNav.classList.remove("active");
+        });
+
+    </script>
   </body>
 </html>

@@ -1,0 +1,43 @@
+@media screen and (max-width: 700px) {
+    .nav{
+        display: none;
+    }
+    .logo-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-container img {
+        width: 50px;
+    }
+    .logo-container h2{
+        font-size: 1.5rem;
+        margin-left: 10px;
+    }
+    .menu-icon {
+        display: block;
+        cursor: pointer;
+    }
+    .menu-icon i {
+        font-size: 1.5rem;
+        color: #333;
+    }
+    .nav.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .container{
+        padding: 20px;
+        flex-direction: column;
+    }
+    
+        
+}
